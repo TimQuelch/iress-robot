@@ -166,8 +166,88 @@ TEST_CASE("move") {
     }
 }
 
-// TODO test left
-// TODO test right
+TEST_CASE("left") {
+    std::optional<Robot> r;
+
+    r = left(Robot{0, 0, Direction::North}, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::West);
+
+    r = left(r, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::South);
+
+    r = left(r, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::East);
+
+    r = left(r, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::North);
+
+    SECTION("Empty value") {
+        r = left({}, {});
+        REQUIRE(!r.has_value());
+    }
+
+    SECTION("With args") {
+        r = left(Robot{0, 0, Direction::North}, {"args", "are", "ignored"});
+        REQUIRE(r.has_value());
+        CHECK(r->x == 0);
+        CHECK(r->y == 0);
+        CHECK(r->dir == Direction::West);
+    }
+}
+
+TEST_CASE("right") {
+    std::optional<Robot> r;
+
+    r = right(Robot{0, 0, Direction::North}, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::East);
+
+    r = right(r, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::South);
+
+    r = right(r, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::West);
+
+    r = right(r, {});
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::North);
+
+    SECTION("Empty value") {
+        r = right({}, {});
+        REQUIRE(!r.has_value());
+    }
+
+    SECTION("With args") {
+        r = right(Robot{0, 0, Direction::North}, {"args", "are", "ignored"});
+        REQUIRE(r.has_value());
+        CHECK(r->x == 0);
+        CHECK(r->y == 0);
+        CHECK(r->dir == Direction::East);
+    }
+}
+
 // TODO test report
 
 // NOLINTEND (*cognitive-complexity)
