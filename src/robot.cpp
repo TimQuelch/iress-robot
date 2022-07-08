@@ -117,6 +117,7 @@ namespace robot {
 
 } // namespace robot
 
+// This boiler plate is to allow directions to be printed with fmt
 template <>
 struct fmt::formatter<robot::Direction> : formatter<std::string_view> {
     template <typename FormatContext>
