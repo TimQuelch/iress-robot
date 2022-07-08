@@ -27,10 +27,10 @@ namespace robot {
 
     Robot move_robot(Robot const& r) {
         switch (r.dir) {
-        case Direction::North: return Robot{r.x, r.y + 1, r.dir};
-        case Direction::East: return Robot{r.x + 1, r.y, r.dir};
-        case Direction::South: return Robot{r.x, r.y - 1, r.dir};
-        case Direction::West: return Robot{r.x - 1, r.y, r.dir};
+            case Direction::North: return Robot{r.x, r.y + 1, r.dir};
+            case Direction::East: return Robot{r.x + 1, r.y, r.dir};
+            case Direction::South: return Robot{r.x, r.y - 1, r.dir};
+            case Direction::West: return Robot{r.x - 1, r.y, r.dir};
         }
     };
 
@@ -74,10 +74,10 @@ namespace robot {
             return {};
         }
         switch (r->dir) {
-        case Direction::North: return Robot{r->x, r->y, Direction::West};
-        case Direction::East: return Robot{r->x, r->y, Direction::North};
-        case Direction::South: return Robot{r->x, r->y, Direction::East};
-        case Direction::West: return Robot{r->x, r->y, Direction::South};
+            case Direction::North: return Robot{r->x, r->y, Direction::West};
+            case Direction::East: return Robot{r->x, r->y, Direction::North};
+            case Direction::South: return Robot{r->x, r->y, Direction::East};
+            case Direction::West: return Robot{r->x, r->y, Direction::South};
         }
     }
 
@@ -87,10 +87,10 @@ namespace robot {
             return {};
         }
         switch (r->dir) {
-        case Direction::North: return Robot{r->x, r->y, Direction::East};
-        case Direction::East: return Robot{r->x, r->y, Direction::South};
-        case Direction::South: return Robot{r->x, r->y, Direction::West};
-        case Direction::West: return Robot{r->x, r->y, Direction::North};
+            case Direction::North: return Robot{r->x, r->y, Direction::East};
+            case Direction::East: return Robot{r->x, r->y, Direction::South};
+            case Direction::South: return Robot{r->x, r->y, Direction::West};
+            case Direction::West: return Robot{r->x, r->y, Direction::North};
         }
     }
 
@@ -123,10 +123,10 @@ struct fmt::formatter<robot::Direction> : formatter<std::string_view> {
     auto format(robot::Direction d, FormatContext& ctx) {
         std::string_view s = "unknown";
         switch (d) {
-        case robot::Direction::North: s = "NORTH"; break;
-        case robot::Direction::East: s = "EAST"; break;
-        case robot::Direction::South: s = "SOUTH"; break;
-        case robot::Direction::West: s = "WEST"; break;
+            case robot::Direction::North: s = "NORTH"; break;
+            case robot::Direction::East: s = "EAST"; break;
+            case robot::Direction::South: s = "SOUTH"; break;
+            case robot::Direction::West: s = "WEST"; break;
         }
         return formatter<std::string_view>::format(s, ctx);
     }
