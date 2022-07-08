@@ -29,4 +29,6 @@ namespace robot {
     std::optional<Robot> left(std::optional<Robot> const&, std::vector<std::string> const&);
     std::optional<Robot> right(std::optional<Robot> const&, std::vector<std::string> const&);
     std::optional<Robot> report(std::optional<Robot> const&, std::vector<std::string> const&);
+
+    std::pair<std::string, std::vector<std::string>> process_commandline(std::string_view cl);
 } // namespace robot

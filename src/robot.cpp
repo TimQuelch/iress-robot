@@ -115,6 +115,40 @@ namespace robot {
             {"REPORT", report},
     };
 
+    std::pair<std::string, std::vector<std::string>> process_commandline(std::string_view cl) {
+        // Find leading whitespace
+        auto const start = cl.find_first_not_of(' ');
+        if (start == std::string_view::npos) {
+            return {};
+        }
+
+        // Find whitespace after command
+        auto const space = cl.find_first_of(' ', start);
+        if (space == std::string_view::npos) {
+            return {std::string{cl.substr(start)}, {}};
+        }
+        // Final command substring
+        auto const command = cl.substr(start, (space - start));
+
+        // Find start of args (after whitespace)
+        auto const argstart = cl.find_first_not_of(' ', space);
+        if (argstart == std::string_view::npos) {
+            return {std::string{command}, {}};
+        }
+
+        // Extract each argument. Whitespace is preserved (shouldn't matter)
+        std::vector<std::string> args = {};
+        std::size_t cursor = argstart;
+        std::size_t delimpos; // NOLINT (*init-variables)
+        while ((delimpos = cl.find(',', cursor)) != std::string_view::npos) {
+            args.emplace_back(std::string{cl.substr(cursor, (delimpos - cursor))});
+            cursor = delimpos + 1;
+        }
+        args.emplace_back(std::string{cl.substr(cursor)});
+
+        return {std::string{command}, args};
+    }
+
 } // namespace robot
 
 // This boiler plate is to allow directions to be printed with fmt

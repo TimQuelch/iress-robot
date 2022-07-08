@@ -248,6 +248,18 @@ TEST_CASE("right") {
     }
 }
 
+TEST_CASE("process_commandline") {
+    using res = std::pair<std::string, std::vector<std::string>>;
+    CHECK(process_commandline("command") == res{"command", {}});
+    CHECK(process_commandline("   command") == res{"command", {}});
+    CHECK(process_commandline("command   ") == res{"command", {}});
+    CHECK(process_commandline("command x") == res{"command", {"x"}});
+    CHECK(process_commandline("command x,y,z") == res{"command", {"x", "y", "z"}});
+    CHECK(process_commandline("command x , y , z") == res{"command", {"x ", " y ", " z"}});
+    CHECK(process_commandline("command x,,z") == res{"command", {"x", "", "z"}});
+    CHECK(process_commandline("command     x,y,z") == res{"command", {"x", "y", "z"}});
+}
+
 // TODO test report
 
 // NOLINTEND (*cognitive-complexity)
