@@ -36,21 +36,25 @@ namespace robot {
 
     std::optional<Robot> place(std::optional<Robot> const& r,
                                std::vector<std::string> const& args) {
-        // Return empty value if robot has already been placed
-        if (r) {
-            return {};
+        // Return previous value if invalid args
+        if (args.size() < 3) {
+            return r;
         }
-        // TODO Check correct arg length
-        int const x = std::stoi(args[0]);
-        int const y = std::stoi(args[1]);
-        // Return empty value if invalid
+        // stoi can throw, would need to replace this with something noexcept for exceptionless code
+        int x = 0;
+        int y = 0;
+        try {
+            x = std::stoi(args[0]);
+            y = std::stoi(args[1]);
+        } catch (std::exception const& e) { return {}; }
+        // Return previous value if invalid position
         if (x < 0 || x >= board_size || y < 0 || y >= board_size) {
-            return {};
+            return r;
         }
         auto const dir = str_to_dir(args[2]);
-        // Return empty value if direction invalid
+        // Return previous value if direction invalid
         if (!dir) {
-            return {};
+            return r;
         }
         return Robot{x, y, *dir};
     }
