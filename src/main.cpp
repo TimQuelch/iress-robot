@@ -1,8 +1,5 @@
 #include <iostream>
-#include <string>
 #include <optional>
-
-#include <fmt/format.h>
 
 #include "robot.h"
 
