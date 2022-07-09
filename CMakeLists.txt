@@ -23,22 +23,23 @@ FetchContent_Declare(Catch2
 
 FetchContent_MakeAvailable(fmt Catch2)
 
+include(${CMAKE_SOURCE_DIR}/cmake/set_build_options.cmake)
+
 # Main lib
 add_library(robot src/robot.cpp)
 target_include_directories(robot PUBLIC src)
 target_link_libraries(robot PRIVATE fmt::fmt)
+robot_set_build_options(robot)
 
 # Main executable
 add_executable(main src/main.cpp)
 target_link_libraries(main robot)
-
-include(${CMAKE_SOURCE_DIR}/cmake/set_build_options.cmake)
-robot_set_build_options(robot)
+robot_set_build_options(main)
 
 # Tests
 add_executable(tests test/test.cpp)
-robot_set_build_options(tests)
 target_link_libraries(tests PRIVATE robot Catch2::Catch2WithMain)
+robot_set_build_options(tests)
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(CTest)
