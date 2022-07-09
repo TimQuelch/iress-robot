@@ -149,6 +149,17 @@ namespace robot {
         return {std::string{command}, args};
     }
 
+    std::optional<Robot> run_simulation(std::istream& in) {
+        auto robot = std::optional<robot::Robot>{};
+        for (std::string line; std::getline(in, line);) {
+            auto const& [command, args] = process_commandline(line);
+            if (commands.find(command) != commands.end()) {
+                robot = commands.at(command)(robot, args);
+            }
+        }
+        return robot;
+    }
+
 } // namespace robot
 
 // This boiler plate is to allow directions to be printed with fmt

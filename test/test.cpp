@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <catch2/catch_test_macros.hpp>
 
 #include "robot.h"
@@ -260,6 +262,41 @@ TEST_CASE("process_commandline") {
     CHECK(process_commandline("command     x,y,z") == res{"command", {"x", "y", "z"}});
 }
 
-// TODO test report
+TEST_CASE("run_simulation") {
+    auto s = "PLACE 0,0,NORTH\n"
+             "MOVE\n"
+             "REPORT\n";
+    auto is = std::istringstream{s};
+    auto r = run_simulation(is);
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 1);
+    CHECK(r->dir == Direction::North);
+
+    s = "PLACE 0,0,NORTH\n"
+        "LEFT\n"
+        "REPORT\n";
+    is = std::istringstream{s};
+    r = run_simulation(is);
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::West);
+
+    s = "PLACE 1,2,EAST\n"
+        "MOVE\n"
+        "MOVE\n"
+        "LEFT\n"
+        "MOVE\n"
+        "REPORT\n";
+    is = std::istringstream{s};
+    r = run_simulation(is);
+    REQUIRE(r.has_value());
+    CHECK(r->x == 3);
+    CHECK(r->y == 3);
+    CHECK(r->dir == Direction::North);
+}
+
+// TODO more extensive test cases for run_simulation
 
 // NOLINTEND (*cognitive-complexity)

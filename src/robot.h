@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <functional>
+#include <istream>
 
 namespace robot {
     constexpr auto board_size = 5;
@@ -31,4 +32,6 @@ namespace robot {
     std::optional<Robot> report(std::optional<Robot> const&, std::vector<std::string> const&);
 
     std::pair<std::string, std::vector<std::string>> process_commandline(std::string_view cl);
+
+    std::optional<Robot> run_simulation(std::istream& in);
 } // namespace robot
