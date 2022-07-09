@@ -97,9 +97,9 @@ namespace robot {
     std::optional<Robot> report(std::optional<Robot> const& r,
                                 std::vector<std::string> const& /*unused*/) {
         if (r) {
-            fmt::print("x = {}, y = {}, direction = {}", r->x, r->y, r->dir);
+            fmt::print("x = {}, y = {}, direction = {}\n", r->x, r->y, r->dir);
         } else {
-            fmt::print("Robot has not been validly placed yet");
+            fmt::print("Robot has not been validly placed yet\n");
         }
         return r;
     }
