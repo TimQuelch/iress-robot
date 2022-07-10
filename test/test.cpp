@@ -336,7 +336,7 @@ TEST_CASE("run_simulation") {
         "\n"                           // invalid
         "LEFT\n"                       // valid
         "NOTACOMMAND\n"                // invalid
-        "MOVE\n"                       // valid
+        "MOVE args,are,ignored\n"      // valid
         "PLACE thisisn't valid\n"      // invalid
         "PLACE 5000, 0, backwards\n"   // invalid
         "REPORT\n";                    // valid
