@@ -51,6 +51,6 @@ namespace robot {
     std::pair<std::string, std::vector<std::string>> process_commandline(std::string_view cl);
 
     // Run the simulation line-by-line on a input stream. Use run_simulation(std::cin) to run from
-    // stdin.
+    // stdin. String stream or file stream can be used for testing.
     std::optional<Robot> run_simulation(std::istream& in);
 } // namespace robot
