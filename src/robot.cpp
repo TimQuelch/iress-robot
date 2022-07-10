@@ -8,8 +8,23 @@
 
 namespace robot {
 
+    // The global map of available command-function pairs. New commands can be added by adding an
+    // entry to this map and implementing the associated functor. This structure could be in the
+    // public API and possibly allow addition/modification of commands.
+    std::map<std::string,
+             std::function<std::optional<Robot>(std::optional<Robot> const&,
+                                                std::vector<std::string> const&)>> const commands =
+        {
+            {"PLACE", place},
+            {"MOVE", move},
+            {"LEFT", left},
+            {"RIGHT", right},
+            {"REPORT", report},
+    };
+
     bool is_valid_pos(int x, int y) { return x >= 0 && x < board_size && y >= 0 && y < board_size; }
 
+    // Convert the parameter to the Direction enum
     std::optional<Direction> str_to_dir(std::string_view str) {
         if (str == "NORTH") {
             return Direction::North;
@@ -26,6 +41,7 @@ namespace robot {
         return {}; // Return empty value if no match
     };
 
+    // Move a robot forward one unit in the stored direction. The resulting position may be invalid
     Robot move_robot(Robot const& r) {
         switch (r.dir) {
             case Direction::North: return Robot{r.x, r.y + 1, r.dir};
@@ -104,17 +120,6 @@ namespace robot {
         }
         return r;
     }
-
-    std::map<std::string,
-             std::function<std::optional<Robot>(std::optional<Robot> const&,
-                                                std::vector<std::string> const&)>> const commands =
-        {
-            {"PLACE", place},
-            {"MOVE", move},
-            {"LEFT", left},
-            {"RIGHT", right},
-            {"REPORT", report},
-    };
 
     std::pair<std::string, std::vector<std::string>> process_commandline(std::string_view cl) {
         // Find leading whitespace
