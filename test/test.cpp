@@ -1,10 +1,14 @@
 #include <sstream>
 
 #include <catch2/catch_test_macros.hpp>
+#include <fmt/format.h>
+#include <fmt/ranges.h>
 
 #include "robot.h"
 
 using namespace robot;
+
+using ComLine = std::pair<std::string, std::vector<std::string>>;
 
 // NOLINTBEGIN (*cognitive-complexity)
 
@@ -251,15 +255,14 @@ TEST_CASE("right") {
 }
 
 TEST_CASE("process_commandline") {
-    using res = std::pair<std::string, std::vector<std::string>>;
-    CHECK(process_commandline("command") == res{"command", {}});
-    CHECK(process_commandline("   command") == res{"command", {}});
-    CHECK(process_commandline("command   ") == res{"command", {}});
-    CHECK(process_commandline("command x") == res{"command", {"x"}});
-    CHECK(process_commandline("command x,y,z") == res{"command", {"x", "y", "z"}});
-    CHECK(process_commandline("command x , y , z") == res{"command", {"x ", " y ", " z"}});
-    CHECK(process_commandline("command x,,z") == res{"command", {"x", "", "z"}});
-    CHECK(process_commandline("command     x,y,z") == res{"command", {"x", "y", "z"}});
+    CHECK(process_commandline("command") == ComLine{"command", {}});
+    CHECK(process_commandline("   command") == ComLine{"command", {}});
+    CHECK(process_commandline("command   ") == ComLine{"command", {}});
+    CHECK(process_commandline("command x") == ComLine{"command", {"x"}});
+    CHECK(process_commandline("command x,y,z") == ComLine{"command", {"x", "y", "z"}});
+    CHECK(process_commandline("command x , y , z") == ComLine{"command", {"x", "y", "z"}});
+    CHECK(process_commandline("command x,,z") == ComLine{"command", {"x", "", "z"}});
+    CHECK(process_commandline("command     x,y,z") == ComLine{"command", {"x", "y", "z"}});
 }
 
 TEST_CASE("run_simulation") {
@@ -295,8 +298,62 @@ TEST_CASE("run_simulation") {
     CHECK(r->x == 3);
     CHECK(r->y == 3);
     CHECK(r->dir == Direction::North);
+
+    s = "PLACE -1,-1,NORTH\n"
+        "MOVE\n"
+        "REPORT\n";
+    is = std::istringstream{s};
+    r = run_simulation(is);
+    REQUIRE(!r.has_value());
+
+    s = "PLACE -1,-1,NORTH\n"
+        "PLACE 0,0,SOUTH\n"
+        "MOVE\n"
+        "REPORT\n";
+    is = std::istringstream{s};
+    r = run_simulation(is);
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::South);
+
+    s = "PLACE -1,-1,NORTH\n"
+        "PLACE 0,0,NORTH\n"
+        "MOVE\n"
+        "MOVE\n"
+        "PLACE 0,0,NORTH\n"
+        "REPORT\n";
+    is = std::istringstream{s};
+    r = run_simulation(is);
+    REQUIRE(r.has_value());
+    CHECK(r->x == 0);
+    CHECK(r->y == 0);
+    CHECK(r->dir == Direction::North);
+
+    s = "  PLACE    1, 2   ,   EAST\n" // valid
+        "MOVE   \n"                    // valid
+        "   MOVE\n"                    // valid
+        "\n"                           // invalid
+        "LEFT\n"                       // valid
+        "NOTACOMMAND\n"                // invalid
+        "MOVE\n"                       // valid
+        "PLACE thisisn't valid\n"      // invalid
+        "PLACE 5000, 0, backwards\n"   // invalid
+        "REPORT\n";                    // valid
+    is = std::istringstream{s};
+    r = run_simulation(is);
+    REQUIRE(r.has_value());
+    CHECK(r->x == 3);
+    CHECK(r->y == 3);
+    CHECK(r->dir == Direction::North);
 }
 
-// TODO more extensive test cases for run_simulation
-
 // NOLINTEND (*cognitive-complexity)
+
+// Allow results of process_commandline to be printed nicely in test output
+namespace Catch {
+    template <>
+    struct StringMaker<ComLine> {
+        static std::string convert(ComLine const& v) { return fmt::format("{}", v); }
+    };
+} // namespace Catch

@@ -38,7 +38,7 @@ robot_set_build_options(main)
 
 # Tests
 add_executable(tests test/test.cpp)
-target_link_libraries(tests PRIVATE robot Catch2::Catch2WithMain)
+target_link_libraries(tests PRIVATE robot Catch2::Catch2WithMain fmt::fmt)
 robot_set_build_options(tests)
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)

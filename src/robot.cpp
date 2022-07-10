@@ -1,5 +1,6 @@
 #include <functional>
 #include <map>
+#include <string_view>
 
 #include <fmt/format.h>
 
@@ -136,15 +137,28 @@ namespace robot {
             return {std::string{command}, {}};
         }
 
-        // Extract each argument. Whitespace is preserved (shouldn't matter)
+        // Vector to store args in
         std::vector<std::string> args = {};
+
+        // Helper to remove surrounding whitespace from args (this saves some duplication later)
+        auto trim_and_emplace = [&args](auto arg) {
+            auto const first = arg.find_first_not_of(' ');
+            auto const last = arg.find_last_not_of(' ');
+            if (first == std::string_view::npos) {
+                args.emplace_back("");
+            } else {
+                args.emplace_back(std::string{arg.substr(first, (last - first + 1))});
+            }
+        };
+
+        // Iterate through args string and insert to arg vec
         std::size_t cursor = argstart;
         std::size_t delimpos; // NOLINT (*init-variables)
         while ((delimpos = cl.find(',', cursor)) != std::string_view::npos) {
-            args.emplace_back(std::string{cl.substr(cursor, (delimpos - cursor))});
+            trim_and_emplace(cl.substr(cursor, (delimpos - cursor)));
             cursor = delimpos + 1;
         }
-        args.emplace_back(std::string{cl.substr(cursor)});
+        trim_and_emplace(cl.substr(cursor, (delimpos - cursor)));
 
         return {std::string{command}, args};
     }
